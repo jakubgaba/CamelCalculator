@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="calculation.xsl"?>
+<!DOCTYPE calculation SYSTEM "calculation.dtd">
+<!--
+    Simple calculation XML
+-->
+<calculation>
+    <Headers>
+        <Host>localhost:8080</Host>
+        <Content-Type>application/json</Content-Type>
+        <User-Agent>PostmanRuntime/7.43.0</User-Agent>
+    </Headers>
+    <calculation>
+        <timestamp>241205131321</timestamp>
+        <number1>5</number1>
+        <number2>120</number2>
+        <operation>subtract</operation>
+    </calculation>
+</calculation>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="calculation.xsl"?>
+<!DOCTYPE calculation SYSTEM "calculation.dtd">
+<!--
+    Simple calculations by Jakub G. XML
+-->
+
+<calculation>
+<host>localhost:8080</host>
+<Content-Type>application/json</Content-Type>
+<User-Agent>PostmanRuntime/7.43.0</User-Agent>
+<!--
+    Operation details
+-->
+<!--
+    Date-n-time
+-->
+    <timestamp>241205142910</timestamp>
+<!--
+    Input numbers
+-->
+    <number1>5</number1>
+    <number2>10</number2>
+<!--
+    Operation
+-->
+    <operation>subtract</operation>
+<!--
+    Result
+-->
+    <result>-5</result>
+
+</calculation>

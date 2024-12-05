@@ -3,75 +3,41 @@ package com.xany.camel;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Map;
 
-public class CalculationLogic implements Processor {
+public class CalculationLogic implements Processor, postOperations {
     public void process(Exchange exchange) throws Exception {
         String method = exchange.getIn().getHeader("CamelHttpMethod", String.class);
-
         if (method.equals("POST")) {
             Map<String, Object> operation = exchange.getIn().getBody(Map.class);
-
-            if (operation == null) {
-                System.out.println(operation);
-                throw new IllegalArgumentException("Input data is null");
-            }
-
-            if (!operation.containsKey("number1") || !operation.containsKey("number2") || !operation.containsKey("operation")) {
-                throw new IllegalArgumentException("Missing required keys in input data");
-            }
-
-            int a = (int) operation.get("number1");
-            int b = (int) operation.get("number2");
-
-            String mathOperation = (String) operation.get("operation");
-
-            String timestamp = new SimpleDateFormat("yyMMddHHmmss").format(new Date());
-            System.out.println("timestamp: " + timestamp);
-            String xmlContent = String.format(
-                    "<calculation>\n" +
-                            "    <timestamp>%s</timestamp>\n" +
-                            "    <a>%d</a>\n" +
-                            "    <b>%d</b>\n" +
-                            "    <operation>%s</operation>\n" +
-                            "</calculation>",
-                    timestamp, a, b, mathOperation
-            );
-
+            LinkedList<String> headers = new LinkedList<>();
+            headers.add(exchange.getIn().getHeader("Host", String.class));
+            headers.add(exchange.getIn().getHeader("Content-Type", String.class));
+            headers.add(exchange.getIn().getHeader("User-Agent", String.class));
+            exchange.getIn().setBody(postOperation(operation, headers));
+        } else if (method.equals("GET")) {
             File directory = new File("timelapses");
-            if (!directory.exists()) {
-                directory.mkdir();
+            BufferedReader reader = null;
+            String[] files = directory.list();
+            for (int i = 0; i < files.length; i++) {
+                files[i] = files[i].substring(12, 24);
             }
-            try (FileWriter writer = new FileWriter(new File(directory, "calculation_" + timestamp + ".xml"))) {
-                writer.write(xmlContent);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            int result = 0;
-            switch (mathOperation) {
-                case "add":
-                    result = a + b;
-                    break;
-                case "subtract":
-                    result = a - b;
-                    break;
-                case "multiply":
-                    result = a * b;
-                    break;
-                case "divide":
-                    if (b == 0) {
-                        throw new ArithmeticException("Division by zero");
+            for(int i = 0; i < files.length; i++) {
+                for(int j = i + 1; j < files.length; j++) {
+                    if(files[i].compareTo(files[j]) > 0) {
+                        String temp = files[i];
+                        files[i] = files[j];
+                        files[j] = temp;
                     }
-                    result = a / b;
-                    break;
+                }
             }
-            exchange.getIn().setBody(result);
+            exchange.getIn().setBody(Arrays.toString(files));
         }
     }
+
 }
