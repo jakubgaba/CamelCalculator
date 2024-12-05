@@ -5,10 +5,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-interface postOperations {
+interface Operations {
     default int postOperation(Map<String, Object> operation, LinkedList<String> headers) {
 
         if (operation == null) {
@@ -96,5 +97,24 @@ interface postOperations {
             e.printStackTrace();
         }
         return result;
+    }
+
+    default String getOperation() {
+        File directory = new File("timelapses");
+        String[] files = directory.list();
+        for (int i = 0; i < files.length; i++) {
+            for (int j = 0; j < files.length; j++) {
+                if (files[i].compareTo(files[j]) < 0) {
+                    String temp = files[i];
+                    files[i] = files[j];
+                    files[j] = temp;
+                }
+            }
+        }
+        Map<Integer, String> map = new LinkedHashMap<>();
+        for (int i = 0; i < files.length; i++) {
+            map.put(i, files[i].substring(12, 24));
+        }
+        return map.toString();
     }
 }
