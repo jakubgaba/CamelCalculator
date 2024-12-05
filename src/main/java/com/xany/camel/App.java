@@ -15,7 +15,7 @@ public class App
 
         context.addRoutes(new Router());
         context.start();
-        Thread.sleep(20000);
+        Thread.sleep(50000);
         context.stop();
         context.close();
     }
